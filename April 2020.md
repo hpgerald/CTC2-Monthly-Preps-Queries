@@ -1,6 +1,10 @@
 ##### 1: SORT APPOINTMENTS IN ASCENDING ORDER
 ```sql
-SELECT DISTINCT tblAppointments.PatientID, tblAppointments.DateAppointmentGiven AS Given, tblAppointments.DateOfAppointment AS Appointment INTO srt_apt FROM tblAppointments ORDER BY tblAppointments.PatientID, tblAppointments.DateAppointmentGiven;
+SELECT DISTINCT 
+PatientID, DateAppointmentGiven AS Given, DateOfAppointment AS Appointment 
+INTO srt_apt 
+FROM tblAppointments 
+ORDER BY PatientID, DateAppointmentGiven;
 ```
 
 ##### 2: SORT VISITS IN ASCENDING ORDER 
