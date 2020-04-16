@@ -1,12 +1,12 @@
 ##### 1: SORT APPOINTMENTS IN ASCENDING ORDER
-`
+```sql
 SELECT DISTINCT tblAppointments.PatientID, tblAppointments.DateAppointmentGiven AS Given, tblAppointments.DateOfAppointment AS Appointment INTO srt_apt FROM tblAppointments ORDER BY tblAppointments.PatientID, tblAppointments.DateAppointmentGiven;
-`
+```
 
 ##### 2: SORT VISITS IN ASCENDING ORDER 
-`
+```sql
 SELECT DISTINCT tblVisits.PatientID, tblVisits.VisitDate, tblVisits.ARVStatusCode, tblVisits.ARVCode, tblVisits.NumDaysDispensed, tblVisits.VisitTypeCode, tblVisits.TBRXIPTID, tblVisits.NoDaysIPTDrugsDispensed, tblVisits.NowPregnant INTO srt_vst FROM tblVisits ORDER BY tblVisits.PatientID, tblVisits.VisitDate;
-`
+```
 
 3: SORT STATUS IN ASCENDING ORDER 
 
