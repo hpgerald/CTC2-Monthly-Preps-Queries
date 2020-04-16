@@ -1,4 +1,4 @@
-**1: SORT APPOINTMENTS IN ASCENDING ORDER**
+1: SORT APPOINTMENTS IN ASCENDING ORDER
 
 SELECT DISTINCT tblAppointments.PatientID, tblAppointments.DateAppointmentGiven AS Given, tblAppointments.DateOfAppointment AS Appointment INTO srt_apt 
 FROM tblAppointments 
