@@ -10,7 +10,8 @@ ORDER BY PatientID, DateAppointmentGiven;
 ##### 2: SORT VISITS IN ASCENDING ORDER 
 ```sql
 SELECT DISTINCT 
-PatientID, VisitDate, ARVStatusCode, ARVCode, NumDaysDispensed, VisitTypeCode, TBRXIPTID, NoDaysIPTDrugsDispensed, NowPregnant 
+PatientID, VisitDate, ARVStatusCode, ARVCode, NumDaysDispensed, VisitTypeCode, TBRXIPTID, 
+NoDaysIPTDrugsDispensed, NowPregnant 
 INTO srt_vst 
 FROM tblVisits 
 ORDER BY PatientID, VisitDate;
@@ -28,7 +29,8 @@ ORDER BY PatientID, StatusDate;
 ##### 4: SORT VRL TESTS IN ASCENDING ORDER 
 ```sql
 SELECT DISTINCT 
-PatientID, TestDate, ResultDate, ResultNumeric, ResultNotes, ResultReturnDate, DateInitiatedEAC, DateHVLTestAfterEAC
+PatientID, TestDate, ResultDate, ResultNumeric, ResultNotes, ResultReturnDate, 
+DateInitiatedEAC, DateHVLTestAfterEAC
 INTO srt_tst 
 FROM tblTests 
 WHERE TestTypeID="VRL" 
@@ -49,7 +51,8 @@ ORDER BY Last(srt_apt.Given) DESC;
 ##### 6: PICK THE LATEST EAC SESSION FOR THE REPORTING PERIOD 
 ```sql
 SELECT 
-srt_tst.PatientID, Last(srt_tst.DateInitiatedEAC) AS [Initiated EAC], Last(srt_tst.DateHVLTestAfterEAC) AS [Test After EAC] 
+srt_tst.PatientID, Last(srt_tst.DateInitiatedEAC) AS [Initiated EAC], 
+Last(srt_tst.DateHVLTestAfterEAC) AS [Test After EAC] 
 INTO LE 
 FROM srt_tst 
 WHERE (((srt_tst.DateInitiatedEAC)<#5/1/2020#)) 
@@ -131,8 +134,10 @@ IIf(IsNull([ReferredFromID]),"Unknown",[ReferredFromID]) AS [Entry Point], tblEx
 DateDiff("yyyy",[DoB],43951) AS Age, IIf([Gender]="Male","M","F") AS Sex, LV.[Last ART Visit] AS [ART Visit], LV.Days, 
 LA.[Appt Date], Round(IIf(IsNull([Appt Date]),[Days],[Appt Date]-[Last ART Visit]),0) AS Diff, 
 Round(IIf([Days]>[Diff],[Days],[Diff]),0) AS Dispensed, 
-IIf([Dispensed]>=180,"6 mo",IIf([Dispensed]>62,"3 mo",IIf([Dispensed]>31,"2 mo","1 mo"))) AS MMS, [ART Visit]+[Dispensed]+30 AS TX_CURR,
-[ART Visit]+[Days]+28 AS LTFU_v0_Doc, [TX_CURR]+1 AS LTFU_v1_Adj, IIf(([Dispensed]<200 And [TX_CURR]>=43951),1,0) AS CURR_APR, 
+IIf([Dispensed]>=180,"6 mo",IIf([Dispensed]>62,"3 mo",IIf([Dispensed]>31,"2 mo","1 mo"))) AS MMS, 
+[ART Visit]+[Dispensed]+30 AS TX_CURR,
+[ART Visit]+[Days]+28 AS LTFU_v0_Doc, [TX_CURR]+1 AS LTFU_v1_Adj, 
+IIf(([Dispensed]<200 And [TX_CURR]>=43951),1,0) AS CURR_APR, 
 LS.[Last Status], LS.[Status Date], LT.[Test Date], LT.Results, LT.Notes, LE.[Initiated EAC], LE.[Test After EAC], 
 LV.Regimen, IIf([Regimen]>99,IIf([Regimen]<106,"DTG","Other"),"Other") AS [DTG or OTH], LV.Pregnant 
 FROM ((((LV LEFT JOIN LE ON LV.PatientID = LE.PatientID) LEFT JOIN LT ON LV.PatientID = LT.PatientID) 
@@ -147,8 +152,10 @@ IIf(IsNull([ReferredFromID]),"Unknown",[ReferredFromID]) AS [Entry Point], tblEx
 DateDiff("yyyy",[DoB],43951) AS Age, IIf([Gender]="Male","M","F") AS Sex, LV.[Last ART Visit] AS [ART Visit], LV.Days, 
 LA.[Appt Date], Round(IIf(IsNull([Appt Date]),[Days],[Appt Date]-[Last ART Visit]),0) AS Diff, 
 Round(IIf([Days]>[Diff],[Days],[Diff]),0) AS Dispensed, 
-IIf([Dispensed]>=180,"6 mo",IIf([Dispensed]>62,"3 mo",IIf([Dispensed]>31,"2 mo","1 mo"))) AS MMS, [ART Visit]+[Dispensed]+30 AS TX_CURR,
-[ART Visit]+[Days]+28 AS LTFU_v0_Doc, [TX_CURR]+1 AS LTFU_v1_Adj, IIf(([Dispensed]<200 And [TX_CURR]>=43951),1,0) AS CURR_APR, 
+IIf([Dispensed]>=180,"6 mo",IIf([Dispensed]>62,"3 mo",IIf([Dispensed]>31,"2 mo","1 mo"))) AS MMS, 
+[ART Visit]+[Dispensed]+30 AS TX_CURR,
+[ART Visit]+[Days]+28 AS LTFU_v0_Doc, [TX_CURR]+1 AS LTFU_v1_Adj, 
+IIf(([Dispensed]<200 And [TX_CURR]>=43951),1,0) AS CURR_APR, 
 LS.[Last Status], LS.[Status Date], LS.Reason, LS.Notes 
 FROM ((LV LEFT JOIN LS ON LV.PatientID = LS.PatientID) LEFT JOIN LA ON LV.PatientID = LA.PatientID) 
 LEFT JOIN tblExportPatients ON LV.PatientID = tblExportPatients.PatientID 
@@ -175,7 +182,8 @@ LEFT JOIN LA ON FER.PatientID = LA.PatientID;
 
 ##### 16: SDI FOR THE REPORTING PERIOD 
 ```sql
-SELECT srt_vst.PatientID, tblExportPatients.ReferredFromID AS [Entry Point], tblExportPatients.DateConfirmedHIVPositive AS Confirmed,
+SELECT srt_vst.PatientID, tblExportPatients.ReferredFromID AS [Entry Point], 
+tblExportPatients.DateConfirmedHIVPositive AS Confirmed,
 srt_vst.VisitDate AS [Start ART], srt_vst.NumDaysDispensed AS Days, IIf([Start ART]-[Confirmed]<8,"Yes","No") AS SDI 
 FROM tblExportPatients RIGHT JOIN srt_vst ON tblExportPatients.PatientID = srt_vst.PatientID 
 WHERE (((srt_vst.VisitDate) Between #4/1/2020# And #4/30/2020#) AND ((srt_vst.ARVStatusCode)=2)) 
