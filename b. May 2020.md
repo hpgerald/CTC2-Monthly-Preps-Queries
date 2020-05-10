@@ -43,7 +43,7 @@ SELECT
 srt_apt.PatientID, Last(srt_apt.Given) AS Given, Last(srt_apt.Appointment) AS [Appt Date] 
 INTO LA 
 FROM srt_apt 
-WHERE (((srt_apt.Given)<#5/1/2020#) AND ((srt_apt.Appointment)<#12/1/2020#)) 
+WHERE (((srt_apt.Given)<#6/1/2020#) AND ((srt_apt.Appointment)<#1/1/2021#)) 
 GROUP BY srt_apt.PatientID 
 ORDER BY Last(srt_apt.Given) DESC; 
 ```
@@ -55,7 +55,7 @@ srt_tst.PatientID, Last(srt_tst.DateInitiatedEAC) AS [Initiated EAC],
 Last(srt_tst.DateHVLTestAfterEAC) AS [Test After EAC] 
 INTO LE 
 FROM srt_tst 
-WHERE (((srt_tst.DateInitiatedEAC)<#5/1/2020#)) 
+WHERE (((srt_tst.DateInitiatedEAC)<#6/1/2020#)) 
 GROUP BY srt_tst.PatientID 
 ORDER BY Last(srt_tst.DateInitiatedEAC) DESC; 
 ```
@@ -67,7 +67,7 @@ srt_tst.PatientID, Last(srt_tst.TestDate) AS [Test Date], Last(srt_tst.ResultDat
 Last(srt_tst.ResultNumeric) AS Results, Last(srt_tst.ResultNotes) AS Notes 
 INTO LT 
 FROM srt_tst 
-WHERE (((srt_tst.TestDate)<#5/1/2020#)) 
+WHERE (((srt_tst.TestDate)<#6/1/2020#)) 
 GROUP BY srt_tst.PatientID 
 ORDER BY Last(srt_tst.TestDate) DESC; 
 ```
@@ -79,7 +79,7 @@ srt_sts.PatientID, Last(srt_sts.Status) AS [Last Status], Last(srt_sts.StatusDat
 Last(srt_sts.StatusReason) AS Reason, Last(srt_sts.Notes) AS Notes 
 INTO LS 
 FROM srt_sts 
-WHERE (((srt_sts.Status) Is Not Null) AND ((srt_sts.StatusDate)<#5/1/2020#)) 
+WHERE (((srt_sts.Status) Is Not Null) AND ((srt_sts.StatusDate)<#6/1/2020#)) 
 GROUP BY srt_sts.PatientID 
 ORDER BY Last(srt_sts.StatusDate) DESC; 
 ```
@@ -91,7 +91,7 @@ srt_vst.PatientID, Last(srt_vst.VisitDate) AS [Last ART Visit], Last(srt_vst.Num
 Last(srt_vst.ARVStatusCode) AS Status, Last(srt_vst.ARVCode) AS Regimen, Last(srt_vst.NowPregnant) AS Pregnant 
 INTO LV 
 FROM srt_vst 
-WHERE (((srt_vst.NumDaysDispensed)>0) AND ((srt_vst.VisitDate)<#5/1/2020#)) 
+WHERE (((srt_vst.NumDaysDispensed)>0) AND ((srt_vst.VisitDate)<#6/1/2020#)) 
 GROUP BY srt_vst.PatientID 
 ORDER BY Last(srt_vst.VisitDate) DESC; 
 ```
@@ -102,7 +102,7 @@ SELECT DISTINCT
 srt_vst.PatientID, srt_vst.VisitDate AS [Start ART], srt_vst.NumDaysDispensed AS Days 
 INTO FER 
 FROM srt_vst 
-WHERE (((srt_vst.VisitDate) Between #3/1/2020# And #3/31/2020#) AND ((srt_vst.ARVStatusCode)=2)) 
+WHERE (((srt_vst.VisitDate) Between #4/1/2020# And #4/30/2020#) AND ((srt_vst.ARVStatusCode)=2)) 
 ORDER BY srt_vst.VisitDate; 
 ```
 
@@ -123,7 +123,7 @@ SELECT DISTINCT
 srt_vst.PatientID, srt_vst.VisitDate AS [Start IPT], srt_vst.TBRXIPTID 
 INTO FIPT 
 FROM srt_vst 
-WHERE (((srt_vst.VisitDate) Between #9/1/2019# And #9/30/2019#) AND ((srt_vst.TBRXIPTID)="START IPT")) 
+WHERE (((srt_vst.VisitDate) Between #10/1/2019# And #10/31/2019#) AND ((srt_vst.TBRXIPTID)="START IPT")) 
 ORDER BY srt_vst.VisitDate; 
 ```
 
@@ -131,13 +131,13 @@ ORDER BY srt_vst.VisitDate;
 ```sql
 SELECT LV.PatientID, tblExportPatients.DateOfBirth AS DoB, tblExportPatients.Sex AS Gender, 
 IIf(IsNull([ReferredFromID]),"Unknown",[ReferredFromID]) AS [Entry Point], tblExportPatients.FileRef AS [File Namba], 
-DateDiff("yyyy",[DoB],43951) AS Age, IIf([Gender]="Male","M","F") AS Sex, LV.[Last ART Visit] AS [ART Visit], LV.Days, 
+DateDiff("yyyy",[DoB],43982) AS Age, IIf([Gender]="Male","M","F") AS Sex, LV.[Last ART Visit] AS [ART Visit], LV.Days, 
 LA.[Appt Date], Round(IIf(IsNull([Appt Date]),[Days],[Appt Date]-[Last ART Visit]),0) AS Diff, 
 Round(IIf([Days]>[Diff],[Days],[Diff]),0) AS Dispensed, 
 IIf([Dispensed]>=180,"6 mo",IIf([Dispensed]>62,"3 mo",IIf([Dispensed]>31,"2 mo","1 mo"))) AS MMS, 
 [ART Visit]+[Dispensed]+30 AS TX_CURR,
 [ART Visit]+[Days]+28 AS LTFU_v0_Doc, [TX_CURR]+1 AS LTFU_v1_Adj, 
-IIf(([Dispensed]<200 And [TX_CURR]>=43951),1,0) AS CURR_APR, 
+IIf(([Dispensed]<200 And [TX_CURR]>=43982),1,0) AS CURR_APR, 
 LS.[Last Status], LS.[Status Date], LT.[Test Date], LT.Results, LT.Notes, LE.[Initiated EAC], LE.[Test After EAC], 
 LV.Regimen, IIf([Regimen]>99,IIf([Regimen]<106,"DTG","Other"),"Other") AS [DTG or OTH], LV.Pregnant 
 FROM ((((LV LEFT JOIN LE ON LV.PatientID = LE.PatientID) LEFT JOIN LT ON LV.PatientID = LT.PatientID) 
@@ -149,13 +149,13 @@ LEFT JOIN tblExportPatients ON LV.PatientID = tblExportPatients.PatientID;
 ```sql
 SELECT LV.PatientID, tblExportPatients.DateOfBirth AS DoB, tblExportPatients.Sex AS Gender, 
 IIf(IsNull([ReferredFromID]),"Unknown",[ReferredFromID]) AS [Entry Point], tblExportPatients.FileRef AS [File Namba], 
-DateDiff("yyyy",[DoB],43951) AS Age, IIf([Gender]="Male","M","F") AS Sex, LV.[Last ART Visit] AS [ART Visit], LV.Days, 
+DateDiff("yyyy",[DoB],43982) AS Age, IIf([Gender]="Male","M","F") AS Sex, LV.[Last ART Visit] AS [ART Visit], LV.Days, 
 LA.[Appt Date], Round(IIf(IsNull([Appt Date]),[Days],[Appt Date]-[Last ART Visit]),0) AS Diff, 
 Round(IIf([Days]>[Diff],[Days],[Diff]),0) AS Dispensed, 
 IIf([Dispensed]>=180,"6 mo",IIf([Dispensed]>62,"3 mo",IIf([Dispensed]>31,"2 mo","1 mo"))) AS MMS, 
 [ART Visit]+[Dispensed]+30 AS TX_CURR,
 [ART Visit]+[Days]+28 AS LTFU_v0_Doc, [TX_CURR]+1 AS LTFU_v1_Adj, 
-IIf(([Dispensed]<200 And [TX_CURR]>=43951),1,0) AS CURR_APR, 
+IIf(([Dispensed]<200 And [TX_CURR]>=43982),1,0) AS CURR_APR, 
 LS.[Last Status], LS.[Status Date], LS.Reason, LS.Notes 
 FROM ((LV LEFT JOIN LS ON LV.PatientID = LS.PatientID) LEFT JOIN LA ON LV.PatientID = LA.PatientID) 
 LEFT JOIN tblExportPatients ON LV.PatientID = tblExportPatients.PatientID 
@@ -186,7 +186,7 @@ SELECT srt_vst.PatientID, tblExportPatients.ReferredFromID AS [Entry Point],
 tblExportPatients.DateConfirmedHIVPositive AS Confirmed,
 srt_vst.VisitDate AS [Start ART], srt_vst.NumDaysDispensed AS Days, IIf([Start ART]-[Confirmed]<8,"Yes","No") AS SDI 
 FROM tblExportPatients RIGHT JOIN srt_vst ON tblExportPatients.PatientID = srt_vst.PatientID 
-WHERE (((srt_vst.VisitDate) Between #4/1/2020# And #4/30/2020#) AND ((srt_vst.ARVStatusCode)=2)) 
+WHERE (((srt_vst.VisitDate) Between #5/1/2020# And #5/31/2020#) AND ((srt_vst.ARVStatusCode)=2)) 
 ORDER BY tblExportPatients.DateConfirmedHIVPositive; 
 ```
 
