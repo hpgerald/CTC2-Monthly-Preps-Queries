@@ -153,10 +153,10 @@ DateDiff("yyyy",[DoB],43982) AS Age, IIf([Gender]="Male","M","F") AS Sex, LV.[La
 LV.Days, LA.[Appt Date], Round(IIf(IsNull([Appt Date]),[Days],[Appt Date]-[Last ART Visit]),0) AS Diff, 
 Round(IIf([Days]>[Diff],[Days],[Diff]),0) AS Dispensed, 
 IIf([Dispensed]>=180,"6 mo",IIf([Dispensed]>62,"3 mo",IIf([Dispensed]>31,"2 mo","1 mo"))) AS MMS, 
-[ART Visit]+[Dispensed]+30 AS TX_CURR, [ART Visit]+[Days]+28 AS LTFU_v0_Doc, [TX_CURR]+1 AS LTFU_v1_Adj, I
-If(([Dispensed]<200 And [TX_CURR]>=43982),1,0) AS CURR_MAY, LS.[Last Status], LS.[Status Date], 
+[ART Visit]+[Dispensed]+30 AS TX_CURR, [ART Visit]+[Days]+28 AS LTFU_v0_Doc, [TX_CURR]+1 AS LTFU_v1_Adj,
+IIf(([Dispensed]<200 And [TX_CURR]>=43982),1,0) AS CURR_MAY, LS.[Last Status], LS.[Status Date], 
 LS.Reason, LS.Notes AS [Status Notes], LT.[Test Date], LT.[Result Date], LT.Results, LT.Notes AS [VRL Notes],
-IIf([Test Date]>43555 And [Test Date]<43983,1,0) AS Sample, IIf([Sample]=1 And [Results]>0,1,0) AS Result
+IIf([Test Date]>43616 And [Test Date]<43983,1,0) AS Sample, IIf([Sample]=1 And [Results]>0,1,0) AS Result
 FROM (((LV LEFT JOIN LS ON LV.PatientID = LS.PatientID) LEFT JOIN LA ON LV.PatientID = LA.PatientID) 
 LEFT JOIN tblExportPatients ON LV.PatientID = tblExportPatients.PatientID) LEFT JOIN LT ON 
 LV.PatientID = LT.PatientID
