@@ -143,7 +143,8 @@ ORDER BY srt_vst.PatientID, srt_vst.VisitDate;
 
 ##### 14: PUT ALL CECAP SCREENING DATA INTO CECAP SCREEN TABLE
 ```sql
-SELECT cecap.PatientID, Last(cecap.PG) AS PG, Last(cecap.BF) AS BF, Last(cecap.VisitDate) AS [Date Screened], Last(cecap.CXCA_Data) AS [Screening Results] INTO cecap_screen
+SELECT cecap.PatientID, Last(cecap.PG) AS PG, Last(cecap.BF) AS BF, Last(cecap.VisitDate) AS [Date Screened], 
+Last(cecap.CXCA_Data) AS [Screening Results] INTO cecap_screen
 FROM cecap
 WHERE (((cecap.CXCA_Code) Between "2" And "3"))
 GROUP BY cecap.PatientID;
