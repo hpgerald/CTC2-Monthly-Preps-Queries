@@ -77,7 +77,7 @@ ORDER BY Last(srt_sts.StatusDate) DESC;
 ```sql
 SELECT 
 srt_vst.PatientID, Last(srt_vst.VisitDate) AS [Last ART Visit], Last(srt_vst.NumDaysDispensed) AS Days, 
-Last(srt_vst.ARVStatusCode) AS Status, Last(srt_vst.ARVCode) AS Regimen, Last(srt_vst.NowPregnant) AS Pregnant 
+Last(srt_vst.ARVStatusCode) AS Status, Last(srt_vst.ARVCode) AS Regimen 
 INTO LV 
 FROM srt_vst 
 WHERE (((srt_vst.NumDaysDispensed)>0) AND ((srt_vst.VisitDate)<#1/1/2021#)) 
