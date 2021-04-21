@@ -1,3 +1,8 @@
+Convert: New --> Old
+```sql
+SELECT * INTO tblExportPatients FROM tblPatients;
+```
+
 ##### 1: SORT APPOINTMENTS IN ASCENDING ORDER
 ```sql
 SELECT DISTINCT 
